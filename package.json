@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/output.css --watch ./templates/**/*.html ./static/js/**/*.js",
+    "build": "npx @tailwindcss/cli -i ./static/css/input.css -o ./static/css/output.css --minify ./templates/**/*.html ./static/js/**/*.js"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "flyonui": "^2.4.1",
+    "tailwindcss": "^4.3.0"
+  }
+}
