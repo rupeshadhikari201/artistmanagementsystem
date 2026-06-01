@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="flex h-auto min-h-screen items-center justify-center overflow-x-hidden  py-10">
+    
+    <div class="relative flex items-center justify-center px-4 sm:px-6 lg:px-8">
+
+      <div class="bg-base-100 shadow-base-300/20 z-1 w-full space-y-6 rounded-xl p-6 shadow-md sm:min-w-md lg:p-8">
+        
+        <div class="flex items-center gap-3">
+          <h2 class="text-base-content text-xl font-bold">AMS</h2>
+        </div>
+
+        <div>
+          <h3 class="text-base-content mb-1.5 text-2xl font-semibold">Sign in to AMS</h3>
+          <p class="text-base-content/80">User Login.</p>
+        </div>
+
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+          <div class="alert alert-error">
+            {{ form.non_field_errors_html }}
+          </div>
+        {% endif %}
+
+        <!-- Form-->
+        <div class="space-y-4">
+          
+          <form method="POST" 
+                action="{% url 'login' %}"
+                class="mb-4 space-y-4">
+
+            <!-- CSRF Token-->
+            {% csrf_token %}
+            
+            <!-- Email Field-->
+            <div>
+              <label class="label-text" for="{{ form.email.id_for_label }}">Email address*</label>
+              {{ form.email }}
+              {{ form.error.email}}
+            </div>
+
+            <!-- Password Field-->
+            <div>
+              <label class="label-text" for="{{ form.password.id_for_label }}">Password*</label>
+              <div class="input">
+                {{ form.password }}
+                
+                <button
+                  type="button"
+                  data-toggle-password='{ "target": "#{{ form.password.id_for_label }}" }'
+                  class="block cursor-pointer"
+                  aria-label="{{ form.password.id_for_label }}"
+                >
+                  <span class="icon-[tabler--eye] password-active:block hidden size-5 shrink-0"></span>
+                  <span class="icon-[tabler--eye-off] password-active:hidden block size-5 shrink-0"></span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Remember Me Field-->
+            <div class="flex items-center justify-between gap-y-2">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" class="checkbox checkbox-primary" id="rememberMe" />
+                <label class="label-text text-base-content/80 p-0 text-base" for="rememberMe">Remember Me</label>
+              </div>
+              <a href="#" class="link link-animated link-primary font-normal">Forgot Password?</a>
+            </div>
+
+            <button class="btn btn-lg btn-primary btn-gradient btn-block">Login</button>
+          </form>
+
+          <p class="text-base-content/80 mb-4 text-center">
+            New on our platform?
+            <a href="{% url 'register' %}" class="link link-animated link-primary font-normal">Create an account</a>
+          </p>
+         
+          </button>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+{% endblock content %}
