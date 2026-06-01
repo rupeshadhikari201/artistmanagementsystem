@@ -2,7 +2,17 @@
 
 {% block title %}Dashboard{% endblock %}
 
-{% block content %}
+{% block extra_css %}
+<style>
+    @media (min-width: 640px) {
+        main {
+        margin-left: 16rem !important;
+        }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block body %}
 
     <!-- include navbar -->
     {% include 'navbar.html' %}
@@ -10,4 +20,13 @@
     <!-- include sidebar -->
     {% include 'sidebar.html' %}
 
-{% endblock content %}
+
+    <main style="margin-left: 0; padding-top:5rem" 
+        class="p-4 min-h-screen bg-gray-50">
+        <div class="rounded-lg dark:border-gray-700">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </main>
+
+{% endblock body %}
