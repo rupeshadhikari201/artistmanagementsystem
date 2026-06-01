@@ -1,0 +1,121 @@
+{% extends "index.html" %}
+
+{% block title %}Edit Artist{% endblock %}
+
+{% block content %}
+
+<div class="flex flex-col sm:flex-row items-center gap-3 md:col-span-2  mt-2">
+  
+  <a href="{% url 'artist-list' %}" class="btn btn-lg btn-primary  sm:w-1/2">
+    Back
+  </a>
+
+</div>
+
+<div class="flex  items-center justify-center overflow-x-hidden py-10">
+    <div class="relative flex items-center justify-center px-4 sm:px-6 lg:px-8">
+
+      <div class="bg-base-100 shadow-base-300/20 z-1 w-full space-y-6 rounded-xl p-6 shadow-md sm:min-w-md lg:p-8">
+       
+        <div>
+          <h3 class="text-base-content mb-1.5 text-2xl font-semibold">Edit Artist</h3>
+        </div>
+
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+          <div class="alert alert-error mb-4">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Form -->
+        <div class="space-y-4">
+          <form method="POST" action="{% url 'artist-edit' target.id %}" class="mb-4 space-y-4" novalidate>
+            
+            <!-- CSRF Token-->
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+              <!--Name -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.name.id_for_label }}">
+                  {{ form.name.label }}{% if form.name.field.required %}*{% endif %}
+                </label>
+                {{ form.name }}
+                {% for error in form.name.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+               <!-- DOB-->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" id="flatpickr-default" for="{{ form.dob.id_for_label }}">
+                  {{ form.dob.label }}{% if form.dob.field.required %}*{% endif %}
+                </label>
+                {{ form.dob }}
+                {% for error in form.dob.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Gender -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.gender.id_for_label }}">
+                  {{ form.gender.label }}{% if form.gender.field.required %}*{% endif %}
+                </label>
+                {{ form.gender }}
+                {% for error in form.gender.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Address-->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.address.id_for_label }}">
+                  {{ form.address.label }}{% if form.address.field.required %}*{% endif %}
+                </label>
+                {{ form.address }}
+                {% for error in form.address.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- First Release Year -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.first_release_year.id_for_label }}">
+                  {{ form.first_release_year.label }}{% if form.first_release_year.field.required %}*{% endif %}
+                </label>
+                {{ form.first_release_year }}
+                {% for error in form.first_release_year.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- No of Albums Released-->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.no_of_albums_released.id_for_label }}">
+                  {{ form.no_of_albums_released.label }}{% if form.no_of_albums_released.field.required %}*{% endif %}
+                </label>
+                {{ form.no_of_albums_released }}
+                {% for error in form.no_of_albums_released.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <div class="flex items-center gap-2 md:col-span-2">
+                <button type="submit" class="btn btn-lg btn-primary btn-gradient btn-block">Create Artist</button>
+              </div>
+
+            </div>
+            
+          </form>
+          
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock content %}

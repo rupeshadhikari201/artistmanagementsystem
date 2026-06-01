@@ -95,7 +95,7 @@ def user_edit(request, user_id):
     target = get_user_by_id(user_id)
     
     if not target:
-        messages.error(request, 'User not found.')
+        logger.warning(request, 'User not found.')
         return redirect('users-list')
     
     if request.method == 'POST':
