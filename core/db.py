@@ -21,6 +21,6 @@ def execute(sql, params=(), fetch=None):
             
             if fetch == 'all':
                 rows = cursor.fetchall()
-                return [dict[r] for r in rows]
+                return [dict(r) for r in rows]
             
             return cursor.rowcount

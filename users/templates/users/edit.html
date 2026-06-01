@@ -1,17 +1,24 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 
-{% block title %}Sign Up{% endblock %}
+{% block title %}Edit User{% endblock %}
 
-{% block body %}
+{% block content %}
 
-<div class="flex h-auto min-h-screen items-center justify-center overflow-x-hidden py-10">
+<div class="flex flex-col sm:flex-row items-center gap-3 md:col-span-2  mt-2">
+  
+  <a href="{% url 'users-list' %}" class="btn btn-lg btn-primary  sm:w-1/2">
+    Back
+  </a>
+
+</div>
+
+<div class="flex  items-center justify-center overflow-x-hidden py-10">
     <div class="relative flex items-center justify-center px-4 sm:px-6 lg:px-8">
 
       <div class="bg-base-100 shadow-base-300/20 z-1 w-full space-y-6 rounded-xl p-6 shadow-md sm:min-w-md lg:p-8">
        
         <div>
-          <h3 class="text-base-content mb-1.5 text-2xl font-semibold">Sign Up to AMS</h3>
-          <p class="text-base-content/80">Start managing your Artists.</p>
+          <h3 class="text-base-content mb-1.5 text-2xl font-semibold">Edit User</h3>
         </div>
 
         <!-- Non-field errors -->
@@ -25,7 +32,7 @@
 
         <!-- Form -->
         <div class="space-y-4">
-          <form method="POST" action="{% url 'register' %}" class="mb-4 space-y-4" novalidate>
+          <form method="POST" action="{% url 'user-edit' target.id %}" class="mb-4 space-y-4" novalidate>
             
             <!-- CSRF Token-->
             {% csrf_token %}
@@ -55,7 +62,7 @@
               </div>
 
               <!-- Email -->
-              <div class="flex flex-col gap-2 md:col-span-2">
+              <div class="flex flex-col gap-2 ">
                 <label class="label-text" for="{{ form.email.id_for_label }}">
                   {{ form.email.label }}{% if form.email.field.required %}*{% endif %}
                 </label>
@@ -72,6 +79,39 @@
                 </label>
                 {{ form.phone }}
                 {% for error in form.phone.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Address-->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.address.id_for_label }}">
+                  {{ form.address.label }}{% if form.address.field.required %}*{% endif %}
+                </label>
+                {{ form.address }}
+                {% for error in form.address.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- DOB-->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" id="flatpickr-default" for="{{ form.dob.id_for_label }}">
+                  {{ form.dob.label }}{% if form.dob.field.required %}*{% endif %}
+                </label>
+                {{ form.dob }}
+                {% for error in form.dob.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Gender -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.gender.id_for_label }}">
+                  {{ form.gender.label }}{% if form.gender.field.required %}*{% endif %}
+                </label>
+                {{ form.gender }}
+                {% for error in form.gender.errors %}
                   <p class="text-red-500 text-sm mt-1">{{ error }}</p>
                 {% endfor %}
               </div>
@@ -131,31 +171,18 @@
                 {% endfor %}
               </div>
 
-              <!-- Privacy Policy -->
-              <div class="flex items-center gap-2 md:col-span-2">
-                <input type="checkbox" class="checkbox checkbox-primary" id="policyagreement" required />
-                <label class="label-text text-base-content/80 p-0 text-base" for="policyagreement">
-                  I agree to
-                  <a href="#" class="link link-animated link-primary font-normal">privacy policy & terms</a>
-                </label>
-              </div>
 
               <div class="flex items-center gap-2 md:col-span-2">
-                <button type="submit" class="btn btn-lg btn-primary btn-gradient btn-block">Sign Up</button>
+                <button type="submit" class="btn btn-lg btn-primary btn-gradient btn-block">Edit User</button>
               </div>
 
             </div>
             
           </form>
-
-          <p class="text-base-content/80 mb-4 text-center">
-            Already have an account?
-            <a href="{% url 'login' %}" class="link link-animated link-primary font-normal">Sign in instead</a>
-          </p>
           
         </div>
       </div>
     </div>
 </div>
 
-{% endblock body%}
+{% endblock content %}

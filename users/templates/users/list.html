@@ -1,0 +1,105 @@
+{% extends "index.html" %}
+
+{% block title %}Users{% endblock title %}
+
+{% block content %}
+
+
+<!-- Add User Form-->
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold">Users</h2>
+  <a href="{% url 'user-create' %}" class="btn btn-primary">
+    <span class="icon-[tabler--plus] size-4"></span> Add User
+  </a>
+</div>
+
+
+<div class="border-base-content/25 w-full overflow-x-auto border">
+  <table class="table">
+
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Phone</th>
+        <th>Gender</th>
+        <th>Joined</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for u in rows %}
+      <tr class="hover:bg-base-200">
+        
+        <!-- Name-->
+        <td class="font-medium">{{ u.first_name }} {{ u.last_name }}</td>
+        
+        <!-- Email -->
+        <td class="text-sm">{{ u.email }}</td>
+
+        <!--Role-->
+        <td>
+          {% if u.role == 'super_admin' %}
+            <span class="badge badge-soft badge-primary text-xs">Super Admin</span>
+          {% elif u.role == 'artist_manager' %}
+            <span class="badge badge-soft badge-info text-xs">Artist Manager</span>
+          {% else %}
+            <span class="badge badge-soft badge-success text-xs">Artist</span>
+          {% endif %}
+        </td>
+        
+        <!-- Phone -->
+        <td class="text-sm">{{ u.phone|default:"—" }}</td>
+        
+        <!-- Gender-->
+        <td class="text-sm">
+          {% if u.gender == 'm' %}Male
+          {% elif u.gender == 'f' %}Female
+          {% elif u.gender == 'o' %}Other
+          {% else %}—{% endif %}
+        </td>
+
+   
+
+        <!-- Joined -->
+        <td class="text-sm text-base-content/60">{{ u.created_at|date:"M d, Y" }}</td>
+        
+        <!-- Actions-->
+        <td>
+
+          <!-- Update User-->
+          <a href="{% url 'user-edit' u.id %}"
+             class="btn btn-circle btn-text btn-sm"
+             aria-label="Edit user">
+            <span class="icon-[tabler--pencil] size-5"></span>
+          </a>
+
+          <form method="POST" action="{% url 'user-delete' u.id %}" class="inline"
+                onsubmit="return confirm('Delete {{ u.first_name }} {{ u.last_name }}?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-circle btn-text btn-sm text-error">
+              <span class="icon-[tabler--trash] size-5"></span>
+            </button>
+        </form>
+
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="text-center py-10 text-base-content/40">
+          <span class="icon-[tabler--users] size-8 mb-2 block mx-auto"></span>
+          No users found.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+<!-- pagination -->
+{% include "components/pagination.html" %}
+
+{% endblock content %}

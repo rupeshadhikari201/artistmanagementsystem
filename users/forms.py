@@ -16,16 +16,68 @@ GENDER_CHOICES = [
 
 class UserCreateForm(TailwindForm):
     
-    first_name       = forms.CharField(max_length=255)
-    last_name        = forms.CharField(max_length=255)
-    email            = forms.EmailField(max_length=255)
-    phone            = forms.CharField(max_length=20, required=False)
-    dob              = forms.DateField(required=False)
-    gender           = forms.ChoiceField(choices=GENDER_CHOICES, required=False)
-    address          = forms.CharField(max_length=255, required=False)
-    role             = forms.ChoiceField(choices=ROLE_CHOICES)
-    password         = forms.CharField(min_length=8)
-    confirm_password = forms.CharField()
+    first_name = forms.CharField(
+        max_length=255,
+        required=True,
+        label="First Name"
+    )
+    
+    last_name = forms.CharField(
+        max_length=255,
+        required=True,
+        label="Last Name"
+    )
+    
+    email = forms.EmailField(
+        max_length=255,
+        required=True,
+        label="Email address"
+    )
+    
+    dob = forms.DateField(
+        required=True,
+        label="Date of Birth",
+        widget=forms.DateInput(attrs={
+            'placeholder': 'YYYY-MM-DD',
+            'id': 'flatpickr-default'
+        })
+    )
+    
+    phone = forms.CharField(
+        max_length=15,
+        required=True,
+        label="Phone Number"
+    )
+    
+    address = forms.CharField(
+        max_length=255,
+        label="Addresss"
+    )
+    
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        required=True,
+        label="Gender"
+    )
+    
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        required=True,
+        label="Role"
+    )
+    
+    password = forms.CharField(
+        min_length=8,
+        required=True,
+        label="Password",
+        widget=forms.PasswordInput()
+    )
+    
+    confirm_password = forms.CharField(
+        required=True,
+        label="Confirm Password",
+        widget=forms.PasswordInput()
+    )
 
     def clean_email(self):
         from core.db import execute
@@ -33,6 +85,112 @@ class UserCreateForm(TailwindForm):
         if execute('SELECT id FROM users WHERE email=%s', (email,), fetch='one'):
             raise forms.ValidationError('Email already in use.')
         return email
+    
+    def clean_phone(self):
+        phone = self.cleaned_data['phone'].strip()
+        if not phone:
+            raise forms.ValidationError('Phone is required.')
+
+        cleaned = ''.join(c for c in phone if c.isdigit() or c == '+')
+        if len(cleaned) < 10:
+            raise forms.ValidationError('Enter a valid phone number (min 10 digits).')
+        return cleaned
+
+    def clean(self):
+        cleaned = super().clean()
+        p1 = cleaned.get('password')
+        p2 = cleaned.get('confirm_password')
+        if p1 and p2 and p1 != p2:
+            self.add_error('confirm_password', 'Passwords do not match.')
+        return cleaned
+    
+
+class UserEditForm(TailwindForm):
+    
+    first_name = forms.CharField(
+        max_length=255,
+        required=True,
+        label="First Name"
+    )
+    
+    last_name = forms.CharField(
+        max_length=255,
+        required=True,
+        label="Last Name"
+    )
+    
+    email = forms.EmailField(
+        max_length=255,
+        required=True,
+        label="Email address"
+    )
+    
+    dob = forms.DateField(
+        required=True,
+        label="Date of Birth",
+        widget=forms.DateInput(attrs={
+            'placeholder': 'YYYY-MM-DD',
+            'id': 'flatpickr-default'
+        })
+    )
+    
+    phone = forms.CharField(
+        max_length=15,
+        required=True,
+        label="Phone Number"
+    )
+    
+    address = forms.CharField(
+        max_length=255,
+        label="Addresss"
+    )
+    
+    gender = forms.ChoiceField(
+        choices=GENDER_CHOICES,
+        required=True,
+        label="Gender"
+    )
+    
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        required=True,
+        label="Role"
+    )
+    
+    password = forms.CharField(
+        min_length=8,
+        required=True,
+        label="Password",
+        widget=forms.PasswordInput()
+    )
+    
+    confirm_password = forms.CharField(
+        required=True,
+        label="Confirm Password",
+        widget=forms.PasswordInput()
+    )
+    
+    def __init__(self, *args, current_user_id=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.current_user_id = current_user_id
+        
+    def clean_email(self):
+        from core.db import execute
+        email = self.cleaned_data['email'].strip().lower()
+        existing = execute('SELECT id FROM users WHERE email=%s', (email,), fetch='one')
+        if existing and existing['id'] != self.current_user_id:
+            raise forms.ValidationError('Email already in use.')
+        return email
+    
+    def clean_phone(self):
+        phone = self.cleaned_data['phone'].strip()
+        if not phone:
+            raise forms.ValidationError('Phone is required.')
+
+        cleaned = ''.join(c for c in phone if c.isdigit() or c == '+')
+        if len(cleaned) < 10:
+            raise forms.ValidationError('Enter a valid phone number (min 10 digits).')
+        return cleaned
 
     def clean(self):
         cleaned = super().clean()

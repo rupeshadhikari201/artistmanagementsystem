@@ -1,0 +1,36 @@
+{% if total_pages > 1 %}
+<nav class="flex items-center justify-between mt-4">
+
+  <span class="text-sm text-base-content/60">
+    Showing {{ rows|length }} of {{ total }} results
+  </span>
+
+  <div class="flex items-center gap-x-2">
+
+    {% if has_prev %}
+      <a href="?page={{ page|add:'-1' }}" class="btn btn-soft mr-3">Previous</a>
+    {% else %}
+      <button class="btn btn-soft mr-3" disabled>Previous</button>
+    {% endif %}
+
+    <div class="flex items-center gap-x-2">
+      {% for pnum in page_range %}
+        <a href="?page={{ pnum }}"
+           class="btn btn-soft btn-square aria-[current='page']:text-bg-soft-primary"
+           {% if pnum == page %}aria-current="page"{% endif %}>
+          {{ pnum }}
+        </a>
+      {% endfor %}
+    </div>
+
+    {% if has_next %}
+      <a href="?page={{ page|add:'1' }}" class="btn btn-soft">Next</a>
+    {% else %}
+      <button class="btn btn-soft" disabled>Next</button>
+    {% endif %}
+
+  </div>
+
+</nav>
+{% endif %}
+
