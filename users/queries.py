@@ -5,10 +5,12 @@ from core.pagination import paginate
 
 logger = logging.getLogger(__name__)
 
+
 def create_user(data, hashed_password):
     
     user = execute(
-        """insert into users 
+        """
+            insert into users 
             (first_name, last_name, email, password, phone, dob, gender, address,role )
             values (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             returning id
@@ -62,7 +64,7 @@ def get_users_page(page, per_page=10):
         return pagination
     
     except Exception as e:
-        logger.exception("Pagination Failed.")
+        logger.exception("Pagination failed for get_users_page.")
         return {
             'rows': [],
             'page': 1,
@@ -114,7 +116,8 @@ def update_user(user_id, data):
             user_id,
         )
     )
-    
+
+ 
 def update_user_password(user_id, hashed_password):
     """
     Update user password by id. 
@@ -133,9 +136,15 @@ def update_user_password(user_id, hashed_password):
         )
     )
     
+    
 def delete_user(user_id):
     """
     Delete user by id. 
     Return True if delete is successful, False otherwise.
     """
-    execute('DELETE FROM users WHERE id=%s', (user_id,))
+    try:
+        execute('delete from users where id=%s', (user_id,))
+        return True
+    except Exception as e:
+        logger.exception('delete_user failed id=%s: %s', user_id, e)
+        return False

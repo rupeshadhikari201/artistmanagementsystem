@@ -1,0 +1,98 @@
+{% extends "index.html" %}
+
+{% block title %}Users{% endblock title %}
+
+{% block content %}
+
+
+<!-- Add Artist Form-->
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-lg font-semibold">Artist</h2>
+  <a href="{% url 'artist-create' %}" class="btn btn-primary">
+    <span class="icon-[tabler--plus] size-4"></span> Add Artist
+  </a>
+</div>
+
+
+<div class="border-base-content/25 w-full overflow-x-auto border">
+  <table class="table">
+
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>DOB</th>
+        <th>Gender</th>
+        <th>Address</th>
+        <th>First Release Year</th>
+        <th>No of Albums Released</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for u in rows %}
+      <tr class="hover:bg-base-200">
+        
+        <!-- Name-->
+        <td class="font-medium">{{ u.name }}</td>
+        
+        <!-- DOB -->
+        <td class="text-sm">{{ u.dob }}</td>
+
+        <!-- Gender-->
+        <td class="text-sm">
+          {% if u.gender == 'm' %}Male
+          {% elif u.gender == 'f' %}Female
+          {% elif u.gender == 'o' %}Other
+          {% else %}—{% endif %}
+        </td>
+        
+        <!-- Address -->
+        <td class="text-sm">{{ u.address|default:"—" }}</td>
+
+        <!-- First Release Year -->
+        <td class="text-sm">{{ u.first_release_year|default:"—" }}</td>
+
+        <!-- No of Albums Released -->
+        <td class="text-sm">{{ u.no_of_albums_released|default:"—" }}</td>
+    
+        <!-- Joined -->
+        <td class="text-sm text-base-content/60">{{ u.created_at|date:"M d, Y" }}</td>
+        
+        <!-- Actions-->
+        <td>
+
+          <!-- Update User-->
+          <a href="{% url 'artist-edit' u.id %}"
+             class="btn btn-circle btn-text btn-sm"
+             aria-label="Artist user">
+            <span class="icon-[tabler--pencil] size-5"></span>
+          </a>
+
+          <form method="POST" action="{% url 'artist-delete' u.id %}" class="inline"
+                onsubmit="return confirm('Delete {{ u.name }}?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-circle btn-text btn-sm text-error">
+              <span class="icon-[tabler--trash] size-5"></span>
+            </button>
+        </form>
+
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="text-center py-10 text-base-content/40">
+          <span class="icon-[tabler--users] size-8 mb-2 block mx-auto"></span>
+          No artist found.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+<!-- pagination -->
+{% include "components/pagination.html" %}
+
+{% endblock content %}
