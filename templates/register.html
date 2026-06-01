@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+
+<div class="flex h-auto min-h-screen items-center justify-center overflow-x-hidden py-10">
+    <div class="relative flex items-center justify-center px-4 sm:px-6 lg:px-8">
+
+      <div class="bg-base-100 shadow-base-300/20 z-1 w-full space-y-6 rounded-xl p-6 shadow-md sm:min-w-md lg:p-8">
+       
+        <div>
+          <h3 class="text-base-content mb-1.5 text-2xl font-semibold">Sign Up to AMS</h3>
+          <p class="text-base-content/80">Start managing your Artists.</p>
+        </div>
+
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+          <div class="alert alert-error mb-4">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Form -->
+        <div class="space-y-4">
+          <form method="POST" action="{% url 'register' %}" class="mb-4 space-y-4" novalidate>
+            
+            <!-- CSRF Token-->
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+              <!-- First Name -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.first_name.id_for_label }}">
+                  {{ form.first_name.label }}{% if form.first_name.field.required %}*{% endif %}
+                </label>
+                {{ form.first_name }}
+                {% for error in form.first_name.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Last Name -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.last_name.id_for_label }}">
+                  {{ form.last_name.label }}{% if form.last_name.field.required %}*{% endif %}
+                </label>
+                {{ form.last_name }}
+                {% for error in form.last_name.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Email -->
+              <div class="flex flex-col gap-2 md:col-span-2">
+                <label class="label-text" for="{{ form.email.id_for_label }}">
+                  {{ form.email.label }}{% if form.email.field.required %}*{% endif %}
+                </label>
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Phone-->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.phone.id_for_label }}">
+                  {{ form.phone.label }}{% if form.phone.field.required %}*{% endif %}
+                </label>
+                {{ form.phone }}
+                {% for error in form.phone.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Role -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.role.id_for_label }}">
+                  {{ form.role.label }}{% if form.role.field.required %}*{% endif %}
+                </label>
+                {{ form.role }}
+                {% for error in form.role.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Password -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.password.id_for_label }}">
+                  {{ form.password.label }}{% if form.password.field.required %}*{% endif %}
+                </label>
+                <div class="input">
+                  {{ form.password }}
+                  <button
+                    type="button"
+                    data-toggle-password='{ "target": "#{{ form.password.id_for_label }}" }'
+                    class="block cursor-pointer"
+                    aria-label="toggle password"
+                  >
+                    <span class="icon-[tabler--eye] password-active:block hidden size-5 shrink-0"></span>
+                    <span class="icon-[tabler--eye-off] password-active:hidden block size-5 shrink-0"></span>
+                  </button>
+                </div>
+                {% for error in form.password.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="flex flex-col gap-2">
+                <label class="label-text" for="{{ form.confirm_password.id_for_label }}">
+                  {{ form.confirm_password.label }}{% if form.confirm_password.field.required %}*{% endif %}
+                </label>
+                <div class="input">
+                  {{ form.confirm_password }}
+                  <button
+                    type="button"
+                    data-toggle-password='{ "target": "#{{ form.confirm_password.id_for_label }}" }'
+                    class="block cursor-pointer"
+                    aria-label="toggle confirm password"
+                  >
+                    <span class="icon-[tabler--eye] password-active:block hidden size-5 shrink-0"></span>
+                    <span class="icon-[tabler--eye-off] password-active:hidden block size-5 shrink-0"></span>
+                  </button>
+                </div>
+                {% for error in form.confirm_password.errors %}
+                  <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                {% endfor %}
+              </div>
+
+              <!-- Privacy Policy -->
+              <div class="flex items-center gap-2 md:col-span-2">
+                <input type="checkbox" class="checkbox checkbox-primary" id="policyagreement" required />
+                <label class="label-text text-base-content/80 p-0 text-base" for="policyagreement">
+                  I agree to
+                  <a href="#" class="link link-animated link-primary font-normal">privacy policy & terms</a>
+                </label>
+              </div>
+
+              <div class="flex items-center gap-2 md:col-span-2">
+                <button type="submit" class="btn btn-lg btn-primary btn-gradient btn-block">Sign Up</button>
+              </div>
+
+            </div>
+            
+          </form>
+
+          <p class="text-base-content/80 mb-4 text-center">
+            Already have an account?
+            <a href="{% url 'login' %}" class="link link-animated link-primary font-normal">Sign in instead</a>
+          </p>
+          
+        </div>
+      </div>
+    </div>
+</div>
+
+{% endblock %}

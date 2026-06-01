@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+
 {% block content %}
 
 <!-- Landing Page -->
@@ -13,7 +14,7 @@
             </a>
 
             <div class="flex items-center gap-5 lg:hidden">
-                <a href="#" class="btn btn-primary">Login</a>
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
                 <button
                     type="button"
                     class="collapse-toggle btn btn-outline btn-secondary btn-square"
@@ -28,7 +29,7 @@
         </div>
 
         <div class="navbar-end max-lg:hidden">
-            <a href="#" class="btn btn-primary">Login</a>
+            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
         </div>
         </div>
     </nav>
@@ -91,7 +92,7 @@
         </p>
 
         <!-- CTA -->
-        <a href="#" class="btn btn-primary btn-gradient btn-lg">
+        <a href="{% url 'register' %}" class="btn btn-primary btn-gradient btn-lg">
             Register
             <span class="icon-[tabler--arrow-right] size-5 rtl:rotate-180"></span>
         </a>
