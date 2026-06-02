@@ -1,5 +1,6 @@
 import bcrypt
 import logging
+from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
@@ -46,7 +47,8 @@ def register_view(request):
         request, 
         'register.html',
         {
-            'form' : form
+            'form' : form,
+            'TURNSTILE_SITE_KEY': settings.TURNSTILE_SITE_KEY
         }
     )
 
@@ -100,7 +102,8 @@ def login_view(request):
         request,
         'login.html',
         {
-            'form' : form
+            'form' : form,
+            'TURNSTILE_SITE_KEY': settings.TURNSTILE_SITE_KEY
         }
     )
 

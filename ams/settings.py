@@ -83,6 +83,12 @@ DATABASES = {
     )
 }
 
+# Turnstile
+
+
+TURNSTILE_SITE_KEY = config('TURNSTILE_SITE_KEY')
+TURNSTILE_SECRET_KEY = config('TURNSTILE_SECRET_KEY')
+print(TURNSTILE_SITE_KEY, 'tsk')
 
 # Password validation
 

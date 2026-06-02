@@ -1,5 +1,7 @@
 from django import forms 
+
 from core.forms.base import TailwindForm
+from core.utils.turnstile import verify_turnstile
 
 ROLE_CHOICES = [
     ('artist', 'Artist'),
@@ -75,6 +77,12 @@ class UserRegisterForm(TailwindForm):
         p2 = cleaned.get('confirm_password')
         if p1 and p2 and p1 != p2:
             self.add_error('confirm_password', 'Passwords do not match.')
+            
+        token = self.data.get("cf-turnstile-response")
+        
+        if not verify_turnstile(token):
+            raise forms.ValidationError("Security check failed. Please try again.")
+        
         return cleaned
     
 
@@ -98,3 +106,12 @@ class UserLoginForm(TailwindForm):
 
         return email
 
+    def clean(self):
+        cleaned = super().clean()
+        
+        token = self.data.get("cf-turnstile-response")
+        
+        if not verify_turnstile(token):
+            raise forms.ValidationError("Security check failed. Please try again.")
+        
+        return cleaned
