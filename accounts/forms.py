@@ -82,4 +82,19 @@ class UserLoginForm(TailwindForm):
 
     email            = forms.EmailField(max_length=255)
     password         = forms.CharField(min_length=8)
+    
+    def clean_email(self):
+        from core.db import execute
+        email = self.cleaned_data['email'].strip().lower()
+
+        user = execute(
+            'SELECT id FROM users WHERE email=%s',
+            (email,),
+            fetch='one'
+        )
+
+        if not user:
+            raise forms.ValidationError("Email or Password does match.")
+
+        return email
 

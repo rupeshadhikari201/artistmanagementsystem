@@ -1,0 +1,91 @@
+{% extends "index.html" %}
+{% block title %}Dashboard{% endblock title %}
+{% block content %}
+
+<div class="mb-6">
+  <h2 class="text-lg font-semibold">Dashboard</h2>
+  <p class="text-sm text-base-content/60">
+    Welcome back, {{ user.first_name }}
+  </p>
+</div>
+
+<!-- stat cards (Total : users, artists, songs) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+
+    <!-- Total Users-->
+    <div class="card bg-base-100 border border-base-content/10">
+        <div class="card-body flex flex-row items-center gap-4">
+        <div class="bg-primary/10 text-primary rounded-lg p-3">
+            <span class="icon-[tabler--users] size-6"></span>
+        </div>
+        <div>
+            <p class="text-sm text-base-content/60">Total Users</p>
+            <p class="text-2xl font-semibold">{{ stats.total_users|default:"0" }}</p>
+        </div>
+        </div>
+    </div>
+
+    <!-- Total Artists-->
+    <div class="card bg-base-100 border border-base-content/10">
+    <div class="card-body flex flex-row items-center gap-4">
+        <div class="bg-secondary/10 text-secondary rounded-lg p-3">
+        <span class="icon-[tabler--microphone] size-6"></span>
+        </div>
+        <div>
+        <p class="text-sm text-base-content/60">Total Artists</p>
+        <p class="text-2xl font-semibold">{{ stats.total_artists|default:"0" }}</p>
+        </div>
+    </div>
+    </div>
+
+    <!-- Total Songs-->
+    <div class="card bg-base-100 border border-base-content/10">
+    <div class="card-body flex flex-row items-center gap-4">
+        <div class="bg-accent/10 text-accent rounded-lg p-3">
+        <span class="icon-[tabler--music] size-6"></span>
+        </div>
+        <div>
+        <p class="text-sm text-base-content/60">Total Songs</p>
+        <p class="text-2xl font-semibold">{{ stats.total_songs|default:"0" }}</p>
+        </div>
+    </div>
+    </div>
+{{ request.resolver_match.url_name }}
+</div>
+
+<!-- genre breakdown -->
+{% if stats.genre_breakdown %}
+<div class="card bg-base-100 border border-base-content/10 max-w-md">
+    
+    <div class="card-body">
+
+        <h3 class="font-medium mb-4">Songs by Genre</h3>
+        <div class="space-y-3">
+            {% for g in stats.genre_breakdown %}
+            <div class="flex items-center justify-between">
+                
+                <div class="flex items-center gap-2">
+                    {% if g.genre == 'rnb' %}
+                    <span class="badge badge-soft badge-primary text-xs">R&B</span>
+                    {% elif g.genre == 'country' %}
+                    <span class="badge badge-soft badge-warning text-xs">Country</span>
+                    {% elif g.genre == 'classic' %}
+                    <span class="badge badge-soft badge-info text-xs">Classic</span>
+                    {% elif g.genre == 'rock' %}
+                    <span class="badge badge-soft badge-error text-xs">Rock</span>
+                    {% elif g.genre == 'jazz' %}
+                    <span class="badge badge-soft badge-success text-xs">Jazz</span>
+                    {% endif %}
+                </div>
+                <span class="text-sm b font-medium">{{ g.count }}</span>
+                
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+{% endif %}
+
+{% endblock content %}
