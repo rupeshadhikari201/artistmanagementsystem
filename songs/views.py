@@ -11,9 +11,16 @@ from .queries import (
 )
 from .forms import MusicCreateForm, MusicEditForm
 from artist.queries import get_artist_by_id
+from core.decorators import (
+    login_required,
+    role_required
+)
+
 logger = logging.getLogger(__name__)
 
 
+@login_required
+@role_required('super_admin', 'artist_manager', 'artist')
 def music_list(request, artist_id):
     
     artist = get_artist_by_id(artist_id)
@@ -60,6 +67,8 @@ def music_list(request, artist_id):
         )
         
 
+@login_required
+@role_required('artist')
 def music_create(request, artist_id):
     
     artist = get_artist_by_id(artist_id)
@@ -105,7 +114,9 @@ def music_create(request, artist_id):
         }
     )
       
-        
+      
+@login_required
+@role_required('artist')        
 def music_edit(request, artist_id, music_id):
     
     artist = get_artist_by_id(artist_id)
@@ -159,8 +170,10 @@ def music_edit(request, artist_id, music_id):
             'artist' : artist
         }
     )
+   
     
-    
+@login_required
+@role_required('artist')    
 def music_delete(request, artist_id, music_id):
     
     if request.method == 'POST':
