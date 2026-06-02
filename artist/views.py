@@ -2,6 +2,7 @@ import logging
 import csv
 from datetime import date
 from django.http import HttpResponse
+from django.contrib import messages
 from django.shortcuts import render,redirect
 
 from .queries import (
@@ -22,6 +23,7 @@ from .forms import (
     ArtistEditForm,
     ArtistImportForm
 )
+
 logger = logging.getLogger(__name__)
 
 
@@ -76,13 +78,16 @@ def artist_create(request):
                 artist = create_artist(data)
                 
                 if artist:
+                    messages.success(request, "Artist Create Successfully")
                     logger.info(f"Artist created successfully.")
                     return redirect('artist-list')
                 else:
+                    messages.error(request, 'Artist Creation Failed')
                     logger.warning("Artist creation failed")
                     form.add_error(None, "Failed to create artist. Please try again.")
             
             except Exception as e:
+                messages.error(request, 'Something went wrong.')
                 logger.exception("Artist creation failed")
                 form.add_error(None, "Something went wrong. Please try again later.")  
     
@@ -103,6 +108,7 @@ def artist_edit(request, artist_id):
     target = get_artist_by_id(artist_id)
     
     if not target:
+        messages.error(request, 'Artist not found')
         logger.warning(f"Artist not found for id: {artist_id}")
         return redirect('artist-list')
     
@@ -118,13 +124,16 @@ def artist_edit(request, artist_id):
                 success = update_artist(artist_id, data)
                 
                 if success:
+                    messages.success(request, 'Artist updated Successfully.')
                     logger.info(f"Artist updated successfully for id: {artist_id}")
                     return redirect('artist-list')
                 else:
+                    messages.error(request, 'Error Updating Artist')
                     logger.warning(f"Artist update failed for id: {artist_id}")
                     form.add_error(None, "Failed to update artist. Please try again.")
             
             except Exception as e:
+                messages.error(request, 'Something went wrong. Please try again later')
                 logger.exception(f"Artist update failed for id: {artist_id}")
                 form.add_error(None, "Something went wrong. Please try again later.")
         
@@ -154,10 +163,13 @@ def artist_delete(request, artist_id):
             
             if target:
                 delete_artist(artist_id)
+                messages.success(request, 'Artist deleted successfully.')
                 logger.info(f"Artist deleted successfully for id: {artist_id}")
             else:
+                messages.warning(request, 'Artist not found.')
                 logger.warning(f"Artist not found for deletion with id: {artist_id}")
         except Exception as e:
+            messages.error(request, 'Artist deletion failed.')
             logger.exception(f"Artist deletion failed for id: {artist_id}") 
             
     return redirect('artist-list')
@@ -175,8 +187,7 @@ def artist_import(request):
             
             # parse file 
             valid_rows, skipped_rows = parser_artists_csv(file)
-            
-            print(valid_rows)
+        
             
             if not valid_rows and not skipped_rows:
                 logger.error('file', 'CSV has no readable rows. Check the format.')
@@ -188,6 +199,7 @@ def artist_import(request):
                 
                 try:
                     inserted = bulk_insert_artists(valid_rows)
+                    messages.success(request, 'Bulk import Successful.')
                     logger.info(
                         'Bulk import done. Inserted = %s, Skipped = %s by user=%s',
                         inserted, len(skipped_rows), request.session['user']['id']
@@ -196,12 +208,17 @@ def artist_import(request):
                     return redirect('artist-list')
                     
                 except Exception as e:
+                    messages.error(request, 'Bulk import failed')
                     logger.exception('Bulk Insert failed: %s', e)
                     form.add_error(None, 'Database error. No records were saved. Please try again.')
                     
             else:
+                messages.error(request, 'No valid rows')
                 logger.error('No Valid rows.')
                 form.add_error(None, 'No valid rows.')
+                
+        else:
+            messages.error(request, 'Invalid File')
             
     else:
         form = ArtistImportForm()
@@ -245,6 +262,7 @@ def artist_export(request):
         
         response = HttpResponse(output, content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="all_artists.csv"'
+        messages.success(request, 'Artist Export Successful')
         logger.info(
             'Artist CSV exported. count=%s',
             len(rows)
@@ -252,5 +270,6 @@ def artist_export(request):
         return response
     
     except Exception as e:
+        messages.success(request, 'Artist Export Failed.')
         logger.exception("Artist Export Failed. %s", e)
         return redirect('artist-list')
