@@ -12,7 +12,7 @@ def create_artist(data):
     Returns the created artist if successful, None otherwise.
     """
     
-    
+
     try:
         artist = execute(
             """

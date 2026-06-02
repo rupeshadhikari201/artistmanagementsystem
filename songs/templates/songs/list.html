@@ -1,15 +1,22 @@
 {% extends "index.html" %}
 
-{% block title %}Users List{% endblock title %}
+{% block title %}Music List{% endblock title %}
 
 {% block content %}
 
+<div class="flex flex-col sm:flex-row items-center gap-3 md:col-span-2  mt-2">
+  
+  <a href="{% url 'artist-list' %}" class="btn btn-lg btn-primary  sm:w-1/2">
+    Back
+  </a>
+
+</div>
 
 <!-- Add Artist Form-->
 <div class="flex items-center justify-between mb-4">
-  <h2 class="text-lg font-semibold">Artist</h2>
-  <a href="{% url 'artist-create' %}" class="btn btn-primary">
-    <span class="icon-[tabler--plus] size-4"></span> Add Artist
+  <h2 class="text-lg font-semibold">Music List</h2>
+  <a href="{% url 'music-create' artist.id %}" class="btn btn-primary">
+    <span class="icon-[tabler--plus] size-4"></span> Add Music
   </a>
 </div>
 
@@ -19,12 +26,9 @@
 
     <thead>
       <tr>
-        <th>Name</th>
-        <th>DOB</th>
-        <th>Gender</th>
-        <th>Address</th>
-        <th>First Release Year</th>
-        <th>No of Albums Released</th>
+        <th>Title</th>
+        <th>Album Name</th>
+        <th>Genre</th>
         <th>Created At</th>
         <th>Actions</th>
       </tr>
@@ -34,30 +38,22 @@
       {% for u in rows %}
       <tr class="hover:bg-base-200">
         
-        <!-- Name-->
-        <td class="text-sm">
-          <a href="{% url 'music-list' u.id %}"> {{ u.name }} </a>
-        </td>
+        <!-- Title-->
+        <td class="font-medium">{{ u.title }}</td>
         
-        <!-- DOB -->
-        <td class="font-medium">{{ u.dob }}</td>
+        <!-- Album Name -->
+        <td class="text-sm">{{ u.album_name }}</td>
 
-        <!-- Gender-->
+        <!-- Genre-->
         <td class="text-sm">
-          {% if u.gender == 'm' %}Male
-          {% elif u.gender == 'f' %}Female
-          {% elif u.gender == 'o' %}Other
+          {% if u.genre == 'rnb' %}RMB
+          {% elif u.genre == 'country' %}Country
+          {% elif u.genre == 'classic' %}
+          {% elif u.genre == 'rock' %}Rock
+          {% elif u.genre == 'jazz' %}Jazz
           {% else %}—{% endif %}
         </td>
         
-        <!-- Address -->
-        <td class="text-sm">{{ u.address|default:"—" }}</td>
-
-        <!-- First Release Year -->
-        <td class="text-sm">{{ u.first_release_year|default:"—" }}</td>
-
-        <!-- No of Albums Released -->
-        <td class="text-sm">{{ u.no_of_albums_released|default:"—" }}</td>
     
         <!-- Joined -->
         <td class="text-sm text-base-content/60">{{ u.created_at|date:"M d, Y" }}</td>
@@ -65,22 +61,14 @@
         <!-- Actions-->
         <td>
 
-          <!-- View Music-->
-          <a href="{% url 'music-list' u.id %}"
-             class="btn btn-circle btn-text btn-sm"
-             aria-label="Edit user">
-            <span class="icon-[tabler--eye] size-5"></span>
-          </a>
-
-          <!-- Update Artist-->
-          <a href="{% url 'artist-edit' u.id %}"
+          <!-- Update User-->
+          <a href="{% url 'music-edit' artist.id u.id %}"
              class="btn btn-circle btn-text btn-sm"
              aria-label="Artist user">
             <span class="icon-[tabler--pencil] size-5"></span>
           </a>
 
-          <!-- Delete Artist-->
-          <form method="POST" action="{% url 'artist-delete' u.id %}" class="inline"
+          <form method="POST" action="{% url 'music-delete' artist.id u.id %}" class="inline"
                 onsubmit="return confirm('Delete {{ u.name }}?')">
             {% csrf_token %}
             <button type="submit" class="btn btn-circle btn-text btn-sm text-error">

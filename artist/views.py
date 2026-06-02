@@ -85,6 +85,7 @@ def artist_create(request):
         }
     )
 
+
 def artist_edit(request, artist_id):
     
     target = get_artist_by_id(artist_id)
