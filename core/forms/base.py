@@ -37,8 +37,8 @@ class TailwindForm(forms.Form):
             elif isinstance(widget, forms.CheckboxInput):
                 css = TAILWIND_CLASSES["checkbox"]
 
-            elif isinstance(widget, forms.RadioSelect):
-                css = TAILWIND_CLASSES["radio"]
+            elif isinstance(widget, forms.FileInput):
+                css = TAILWIND_CLASSES["file"]
 
             else:
                 css = TAILWIND_CLASSES["input"]

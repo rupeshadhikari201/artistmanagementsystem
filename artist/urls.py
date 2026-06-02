@@ -7,5 +7,9 @@ urlpatterns = [
     path('create/', views.artist_create , name='artist-create'),
     path('edit/<int:artist_id>/', views.artist_edit , name='artist-edit'),
     path('delete/<int:artist_id>/', views.artist_delete , name='artist-delete'),
+    path('import/', views.artist_import, name='artist-import'),
+    path('import-sample/', views.download_artist_sample_csv, name='artist-import-sample'),
+    # path('export/', views.artist_export, name='artist-export'),
+    
     
 ]

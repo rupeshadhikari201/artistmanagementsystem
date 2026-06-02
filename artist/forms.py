@@ -7,6 +7,8 @@ GENDER_CHOICES = [
     ('f', 'Female'),
     ('o', 'Other'),
 ]
+ALLOWED_EXTENSIONS = ['.csv']
+MAX_FILE_SIZE      = 5 * 1024 * 1024  
 
 current_year = __import__('datetime').date.today().year
 
@@ -113,3 +115,27 @@ class ArtistEditForm(ArtistCreateForm):
         if not year:
             return None
         return int(year)
+    
+
+class ArtistImportForm(TailwindForm):
+    
+    file = forms.FileField(
+        label = 'CSV File',
+        help_text = 'Max 5mb file in .csv format'
+    )
+    
+    def clean_file(self):
+        
+        file = self.cleaned_data['file']
+        
+        # file validations
+        if not file.name.endswith('.csv'):
+            raise forms.ValidationError('Invalid file type. Please upload .csv file')
+        
+        if file.size > MAX_FILE_SIZE:
+            raise forms.ValidationError('Fill to large. Should be less than 5mb.')
+        
+        if file.size == 0:
+            raise forms.ValidationError('The uploaded file is Empty')
+        
+        return file

@@ -1,4 +1,7 @@
 import logging
+import csv
+from datetime import date
+from django.http import HttpResponse
 from django.shortcuts import render,redirect
 
 from .queries import (
@@ -7,9 +10,16 @@ from .queries import (
     get_artist_by_id,
     update_artist,
     delete_artist,
+    bulk_insert_artists
 )
-from .forms import ArtistCreateForm, ArtistEditForm
-
+from .utils import (
+    parser_artists_csv
+)
+from .forms import (
+    ArtistCreateForm,
+    ArtistEditForm,
+    ArtistImportForm
+)
 logger = logging.getLogger(__name__)
 
 
@@ -132,6 +142,7 @@ def artist_edit(request, artist_id):
         }
     )
 
+
 def artist_delete(request, artist_id):  
     
     if request.method == 'POST':
@@ -148,3 +159,76 @@ def artist_delete(request, artist_id):
             logger.exception(f"Artist deletion failed for id: {artist_id}") 
             
     return redirect('artist-list')
+
+
+def artist_import(request):
+    
+    if request.method == 'POST':
+        
+        form = ArtistImportForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            
+            file = form.cleaned_data['file']
+            
+            # parse file 
+            valid_rows, skipped_rows = parser_artists_csv(file)
+            
+            print(valid_rows)
+            
+            if not valid_rows and not skipped_rows:
+                logger.error('file', 'CSV has no readable rows. Check the format.')
+                form.add_error('file', 'CSV has no readable rows. Check the format.')
+                
+            # insert to db
+            inserted = 0
+            if valid_rows:
+                
+                try:
+                    inserted = bulk_insert_artists(valid_rows)
+                    logger.info(
+                        'Bulk import done. Inserted = %s, Skipped = %s by user=%s',
+                        inserted, len(skipped_rows), request.session['user']['id']
+                        )
+                    
+                    return redirect('artist-list')
+                    
+                except Exception as e:
+                    logger.exception('Bulk Insert failed: %s', e)
+                    form.add_error(None, 'Database error. No records were saved. Please try again.')
+                    
+            else:
+                logger.error('No Valid rows.')
+                form.add_error(None, 'No valid rows.')
+            
+    else:
+        form = ArtistImportForm()
+
+    return render(
+        request, 
+        'artist/import.html', 
+        {
+            'form':         form,
+            'user':         request.session.get('user'),
+            'current_year': date.today().year,
+        }
+    )
+    
+def download_artist_sample_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="artist_sample.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow([
+        'name',
+        'dob',
+        'gender',
+        'address',
+        'first_release_year',
+        'no_of_albums_released'
+    ])
+
+    writer.writerow(['Ram', '1988-05-05', 'f', 'London', 2008, 4])
+    writer.writerow(['Shyam', '1986-10-24', 'm', 'Toronto', 2010, 7])
+
+    return response
