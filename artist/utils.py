@@ -99,5 +99,32 @@ def parser_artists_csv(file):
         
 
 def export_artists_csv(rows):
-    pass
+    """ 
+    Takes a list of artist dicts and returns a CSV string.
+    """
+    
+    buffer = io.StringIO()
+    writer = csv.DictWriter(
+        buffer,
+        fieldnames=EXPORT_COLUMNS,
+        extrasaction='ignore'
+    )
+    writer.writeheader()
+    
+    
+    for row in rows:
+        writer.writerow(
+            {
+            'name':                 row.get('name', ''),
+            'dob':                  row.get('dob', '') or '',
+            'gender':               row.get('gender', '') or '',
+            'address':              row.get('address', '') or '',
+            'first_release_year':   row.get('first_release_year', '') or '',
+            'no_of_albums_released': row.get('no_of_albums_released', 0) or 0,
+            }
+        )
+    
+    buffer.seek(0)
+    return buffer.getvalue()
+
     

@@ -188,3 +188,21 @@ def bulk_insert_artists(valid_rows):
         connection.close()
     
     
+def get_all_artist():
+    """ 
+    Fetch all artist. (without pagination)
+    """
+    
+    try:
+        artists = execute(
+            """
+            select name, dob, gender, address, first_release_year, no_of_albums_released
+            from artist
+            order by name asc
+            """,
+            fetch='all'
+        )
+        return artists
+    except Exception as e:
+        logger.exception("Get all artist failed. %s", e)
+    

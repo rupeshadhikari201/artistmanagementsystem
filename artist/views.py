@@ -10,10 +10,12 @@ from .queries import (
     get_artist_by_id,
     update_artist,
     delete_artist,
-    bulk_insert_artists
+    bulk_insert_artists,
+    get_all_artist
 )
 from .utils import (
-    parser_artists_csv
+    parser_artists_csv,
+    export_artists_csv
 )
 from .forms import (
     ArtistCreateForm,
@@ -44,7 +46,7 @@ def artist_list(request):
         logger.warning(f"Invalid page value : {e}")
         return render(
             request, 
-            'users/list.html', 
+            'artist/list.html', 
             {
                 'rows': [],
                 'error': 'Something went wrong. Please try again later.',
@@ -214,6 +216,7 @@ def artist_import(request):
         }
     )
     
+    
 def download_artist_sample_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="artist_sample.csv"'
@@ -232,3 +235,22 @@ def download_artist_sample_csv(request):
     writer.writerow(['Shyam', '1986-10-24', 'm', 'Toronto', 2010, 7])
 
     return response
+
+
+def artist_export(request):
+    
+    try:
+        rows = get_all_artist()
+        output = export_artists_csv(rows)
+        
+        response = HttpResponse(output, content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="all_artists.csv"'
+        logger.info(
+            'Artist CSV exported. count=%s',
+            len(rows)
+        )
+        return response
+    
+    except Exception as e:
+        logger.exception("Artist Export Failed. %s", e)
+        return redirect('artist-list')
