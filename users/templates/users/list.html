@@ -76,6 +76,7 @@
             <span class="icon-[tabler--pencil] size-5"></span>
           </a>
 
+          <!-- Delete User-->
           <form method="POST" action="{% url 'user-delete' u.id %}" class="inline"
                 onsubmit="return confirm('Delete {{ u.first_name }} {{ u.last_name }}?')">
             {% csrf_token %}
