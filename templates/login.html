@@ -21,8 +21,10 @@
 
         <!-- Non-field errors -->
         {% if form.non_field_errors %}
-          <div class="alert alert-error">
-            {{ form.non_field_errors_html }}
+          <div class="alert alert-error mb-4">
+            {% for error in form.non_field_errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
           </div>
         {% endif %}
 
@@ -40,7 +42,9 @@
             <div>
               <label class="label-text" for="{{ form.email.id_for_label }}">Email address*</label>
               {{ form.email }}
-              {{ form.error.email}}
+              {% for error in form.email.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+              {% endfor %}
             </div>
 
             <!-- Password Field-->

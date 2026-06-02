@@ -1,5 +1,6 @@
 import bcrypt
 import logging
+from django.contrib import messages
 from django.shortcuts import render, redirect
 
 from  core.db import execute
@@ -25,13 +26,16 @@ def register_view(request):
                 user = user_register(data, hashed)
                 
                 if user:
-                    logger.info('User registered successfully. id=%s', user['id'])
+                    messages.success(request, 'User registered successfully')
+                    logger.info('User registered successfully')
                     return redirect('login')
                 else:
-                    logger.error('user_register returned None for email: %s', data['email'])
+                    messages.error(request, 'Error registering User')
+                    logger.error('user_register returned None for email')
                     form.add_error(None, 'Registration failed. Please try again')
             
             except Exception as e:
+                messages.error(request, 'Unexpected error during registration')
                 logger.exception('Unexpected error during registration: %s', str(e))
                 form.add_error(None, 'Something went wrong. Please try again later.')
     
@@ -80,11 +84,12 @@ def login_view(request):
                     'email':      user['email'],
                     'role':       user['role'],
                 }
-                
-                logger.info('User logged in. id=%s role=%s', user['id'], user['role'])
+                messages.success(request, "User Logged in Successfully.")
+                logger.info('User logged in')
                 return redirect('dashboard')
             
             except Exception as e:
+                messages.error(request, 'Unexpected error during login')
                 logger.exception('Unexpected error during login: %s', str(e))
                 form.add_error(None, 'Something went wrong. Please try again later.')
         
@@ -102,6 +107,7 @@ def login_view(request):
     
 def logout_view(request):
     user = request.session.get('user',{})
-    logger.info('User logged out. id=%s', user.get('id'))
+    messages.success(request, 'User logged  out successfully.')
+    logger.info('User logged out.')
     request.session.flush()
     return redirect('login')

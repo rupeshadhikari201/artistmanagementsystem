@@ -7,22 +7,31 @@
     <ul class="menu p-0">
       
       <li>
-        <a href="#">
-          <span class="icon-[tabler--home] size-5"></span>
+        <a href="{% url 'dashboard' %}"
+           class="flex items-center gap-2 px-3 py-2 rounded-lg
+           {% if request.resolver_match.url_name == 'dashboard' %}bg-gray-200 text-blue-600{% else %}hover:bg-gray-100{% endif %}">
+          
+           <span class="icon-[tabler--home] size-5"></span>
           Dashboard
         </a>
       </li>
 
       <li>
-        <a href="{% url 'users-list' %}">
+        <a href="{% url 'users-list' %}"
+           class="flex items-center gap-2 px-3 py-2 rounded-lg
+           {% if request.resolver_match.url_name == 'users-list' %}bg-gray-200 text-blue-600{% else %}hover:bg-gray-100{% endif %}">
+
           <span class="icon-[tabler--user] size-5"></span>
           Users
         </a>
       </li>
 
       <li>
-        <a href="{% url 'artist-list' %}">
-          <span class="icon-[tabler--message] size-5"></span>
+        <a href="{% url 'artist-list' %}"
+           class="flex items-center gap-2 px-3 py-2 rounded-lg
+           {% if request.resolver_match.url_name == 'artist-list' %}bg-gray-200 text-blue-600{% else %}hover:bg-gray-100{% endif %}">
+
+          <span class="icon-[tabler--music] size-5"></span>
           Artists
         </a>
       </li>
