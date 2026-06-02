@@ -8,6 +8,7 @@ GENRE_CHOICES = [
     ('classic', 'Classic'),
     ('rock', 'Rock'),
     ('jazz', 'Jazz'),
+    
 ]
 
 class MusicCreateForm(TailwindForm):
