@@ -23,10 +23,16 @@ from .forms import (
     ArtistEditForm,
     ArtistImportForm
 )
+from core.decorators import (
+    login_required,
+    role_required
+)
 
 logger = logging.getLogger(__name__)
 
 
+@login_required
+@role_required('super_admin', 'artist_manager','artist')
 def artist_list(request):
     
     try:
@@ -65,6 +71,8 @@ def artist_list(request):
         )
         
         
+@login_required
+@role_required('artist_manager')        
 def artist_create(request):
     
     if request.method == 'POST':
@@ -103,6 +111,8 @@ def artist_create(request):
     )
 
 
+@login_required
+@role_required('artist_manager')
 def artist_edit(request, artist_id):
     
     target = get_artist_by_id(artist_id)
@@ -154,6 +164,8 @@ def artist_edit(request, artist_id):
     )
 
 
+@login_required
+@role_required('artist_manager')
 def artist_delete(request, artist_id):  
     
     if request.method == 'POST':
@@ -175,6 +187,8 @@ def artist_delete(request, artist_id):
     return redirect('artist-list')
 
 
+@login_required
+@role_required('artist_manager')
 def artist_import(request):
     
     if request.method == 'POST':
@@ -234,6 +248,8 @@ def artist_import(request):
     )
     
     
+@login_required
+@role_required('artist_manager')    
 def download_artist_sample_csv(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="artist_sample.csv"'
@@ -254,6 +270,8 @@ def download_artist_sample_csv(request):
     return response
 
 
+@login_required
+@role_required('artist_manager')
 def artist_export(request):
     
     try:

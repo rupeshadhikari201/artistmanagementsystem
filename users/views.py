@@ -15,10 +15,15 @@ from .queries import (
     update_user_password, 
     delete_user,
 )
+from core.decorators import (
+    login_required, 
+    role_required
+)
 
 logger = logging.getLogger(__name__)
     
-
+@login_required
+@role_required('super_admin')
 def user_list(request):
     try:
         page = int(request.GET.get('page',1))
@@ -52,8 +57,10 @@ def user_list(request):
             'rows': [],
             'error': 'Something went wrong. Please try again later.',
         })
+
     
-        
+@login_required
+@role_required('super_admin')       
 def user_create(request):
     
     if request.method == 'POST':
@@ -94,7 +101,9 @@ def user_create(request):
         }
     )
     
-    
+
+@login_required
+@role_required('super_admin')      
 def user_edit(request, user_id):
     target = get_user_by_id(user_id)
     
@@ -145,7 +154,9 @@ def user_edit(request, user_id):
         }   
     )
    
-    
+
+@login_required
+@role_required('super_admin')      
 def user_delete(request, user_id):
     
     if request.method == 'POST':
