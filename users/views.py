@@ -68,16 +68,20 @@ def user_create(request):
                 user = create_user(data, hashed)
                 
                 if user:
+                    messages.success(request, 'User Created Successfully.')
                     logger.info('User created successfully.')
                     return redirect('users-list')
-                else:                   
+                else:
+                    messages.error(request, 'Error Creating User.')                  
                     logger.error('create_user returned None for email: %s', data['email'])
                     form.add_error(None, 'User creation failed. Please try again')
             
             except Exception as e:
+                messages.error(request, 'Error Creating user')
                 logger.exception("User creation failed")
                 form.add_error(None, 'Something went wrong. Please try again later.')
-            
+        else:
+            messages.error(request, 'Error in form validation.' )
     else:
         form = UserCreateForm()
         
@@ -117,8 +121,11 @@ def user_edit(request, user_id):
                 return redirect('users-list')
             
             except Exception as e:
+                messages.error(request, 'Error updating User.')
                 logger.exception("User update failed for id: %s", user_id)
                 form.add_error(None, 'Something went wrong. Please try again later.')
+        else:
+            messages.error(request, 'Error in form validation.')
                 
     else:
         form = UserEditForm(

@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+
+{% block title %}Import Artist{% endblock %}
+
+{% block content %}
+
+<div class="flex flex-col sm:flex-row items-center justify-center gap-3 md:col-span-2  mt-2">
+  
+  <a href="{% url 'artist-list' %}" class="btn btn-lg btn-primary  ">
+    Back
+  </a>
+
+</div>
+
+<div class="flex  items-center justify-center overflow-x-hidden py-10">
+    <div class="relative flex items-center justify-center px-4 sm:px-6 lg:px-8">  
+
+        <div class="bg-base-100 shadow-base-300/20 z-1 w-full space-y-6 rounded-xl p-6 shadow-md sm:min-w-md lg:p-8">
+        
+            <div class='flex flex-row justify-between'>
+                <h3 class="text-base-content mb-1.5 text-2xl font-semibold">Edit Artist</h3>
+
+                <button class='btn btn-success'>
+                    <a href="{% url 'artist-import-sample' %}" class="text-white">
+                    Download sample CSV
+                </a>
+                </button>
+            </div>
+
+            <!-- Non-field errors -->
+            {% if form.non_field_errors %}
+            <div class="alert alert-error mb-4">
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Form -->
+            <div class="space-y-4">
+            <form 
+                    method="POST" 
+                    enctype="multipart/form-data"
+                    action="{% url 'artist-import'  %}" 
+                    class="mb-4 space-y-4" 
+                    novalidate
+                >
+                
+                <!-- CSRF Token-->
+                {% csrf_token %}
+
+                
+                <!--File -->
+                <div class="flex flex-col">
+                    <label class="label-text" for="{{ form.file.id_for_label }}">
+                    {{ form.file.label }}{% if form.file.field.required %}*{% endif %}
+                    </label>
+                    {{ form.file }}
+                    {% for error in form.file.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ error }}</p>
+                    {% endfor %}
+                    <p class="text-xs text-base-content/50 mt-1">Max 5MB. Must be .csv format.</p>
+                </div>
+
+                <div class="flex items-center gap-2 md:col-span-2">
+                    <button type="submit" class="btn btn-lg btn-primary btn-gradient btn-block">Import</button>
+                </div>
+
+                
+            </form>
+            
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

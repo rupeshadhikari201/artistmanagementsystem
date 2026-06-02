@@ -139,3 +139,70 @@ def delete_artist(artist_id):
     except Exception as e:
         logger.exception('delete_artist failed id=%s: %s', artist_id, e)
         return False
+    
+
+def bulk_insert_artists(valid_rows):
+    """ 
+    Inserts all valid rows in a single transaction.
+    
+    Returns: 
+        inserted(int) : no of rows inserted
+    """
+    
+    from core.db import get_connection
+    
+    connection = get_connection()
+    inserted = 0
+    
+    try:
+        
+        with connection.cursor() as cursor:
+            for row in valid_rows:
+                cursor.execute(
+                    """ 
+                    insert into artist
+                    (name, dob, gender, address, first_release_year, no_of_albums_released)
+                    values (%s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        row['name'],
+                        row['dob'],
+                        row['gender'],
+                        row['address'],
+                        row['first_release_year'],
+                        row['no_of_albums_released']
+                    )
+                )
+                
+                inserted += 1
+                
+        connection.commit()
+        return inserted
+            
+    except Exception as e:
+        connection.rollback()
+        logger.exception('Artist Bulk Insert Failed : %s', e)
+        raise
+    
+    finally:
+        connection.close()
+    
+    
+def get_all_artist():
+    """ 
+    Fetch all artist. (without pagination)
+    """
+    
+    try:
+        artists = execute(
+            """
+            select name, dob, gender, address, first_release_year, no_of_albums_released
+            from artist
+            order by name asc
+            """,
+            fetch='all'
+        )
+        return artists
+    except Exception as e:
+        logger.exception("Get all artist failed. %s", e)
+    

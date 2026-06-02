@@ -9,6 +9,9 @@
     <!--FlyonUI CSS-->
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 
+    <!-- Notyf -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
     {% block extra_css %}
 
     {% endblock extra_css %}
@@ -21,8 +24,10 @@
     {% endblock body %}
     
     <!-- FlyonUI JS-->
-    <script src="{% static 'flyonui/flyonui.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flyonui@latest/dist/js/flyonui.min.js"></script>
+
+    <!-- Notyf -->
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 
 
     <script>
@@ -32,6 +37,27 @@
         })
     })
     </script>
+
+    <script>
+        window.addEventListener('load', function () {
+            const notyf = new Notyf();
+
+            {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                notyf.success("{{ message|escapejs }}");
+                {% elif message.tags == 'error' %}
+                notyf.error("{{ message|escapejs }}");
+                {% else %}
+                notyf.open({
+                    type: 'info',
+                    message: "{{ message|escapejs }}"
+                });
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+        });
+        </script>
 
 
     

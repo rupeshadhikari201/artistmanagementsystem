@@ -2,7 +2,7 @@ TAILWIND_CLASSES = {
     'input': 'input',
     'select': 'select',
     'textarea': 'textarea',
-    'file': 'input',
+    'file': 'input w-full',
     'checkbox': 'checkbox checkbox-primary',
     'error': 'input is-invalid',
 }

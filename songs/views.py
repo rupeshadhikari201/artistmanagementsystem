@@ -1,4 +1,5 @@
 import logging
+from django.contrib import messages
 from django.shortcuts import render,redirect
 
 from .queries import (
@@ -73,20 +74,22 @@ def music_create(request, artist_id):
         if form.is_valid():
             
             data = form.cleaned_data
-            print(data)
             
             try:
                 
                 music = create_music(data, artist_id)
                 
                 if music:
+                    messages.success(request, "Music created successfully.")
                     logger.info("Music created successfully.")
                     return redirect('music-list', artist_id=artist_id)
                 else:
+                    messages.error(request, "Error creating Music")
                     logger.warning("Music Creation failed")
                     form.add_error(None, "Failed to create Music.")
             
             except Exception as e:
+                messages.error(request, "Music Creation Failed")
                 logger.warning("Music Creation Failed")
                 form.add_error(None, "Something went wrong. Please try again later.")  
                 
@@ -127,14 +130,17 @@ def music_edit(request, artist_id, music_id):
                 success = update_music(music_id, data)
                 
                 if success:
+                    messages.success(request, "Music updated successfully.")
                     logger.info(f"Music updated successfully for id : {music_id}")
                     return redirect('music-list', artist_id=artist_id)
                 
                 else:
+                    messages.error(request, "Error updating music.")
                     logger.warning(f"Music update failed for id: {music_id}")
                     form.add_error(None, "Failed to update music. Please try again.")
             
             except Exception as e:
+                messages.error(request, "Something went wrong.")
                 logger.exception(f"Music update failed for id: {music_id}")
                 form.add_error(None, "Something went wrong. Please try again later.")
     else:
@@ -146,7 +152,7 @@ def music_edit(request, artist_id, music_id):
         
     return render(
         request, 
-        'songs/edit.html',
+        'songs/edit.html',  
         {
             'form': form,
             'music': music,
@@ -166,9 +172,11 @@ def music_delete(request, artist_id, music_id):
                 success = delete_music(music_id)
                 
                 if success:
+                    messages.success(request, 'Music deleted successfully.')
                     logger.info(f"Music deleted successfully for id: {music_id}")
                 
                 else:
+                    messages.error(request, 'Error Deleting Music.')
                     logger.error('Failed to delete song.')
             else:
                 logger.warning(f"Music not found for deletion with id: {music_id}")

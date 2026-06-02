@@ -8,9 +8,17 @@
 <!-- Add Artist Form-->
 <div class="flex items-center justify-between mb-4">
   <h2 class="text-lg font-semibold">Artist</h2>
-  <a href="{% url 'artist-create' %}" class="btn btn-primary">
-    <span class="icon-[tabler--plus] size-4"></span> Add Artist
-  </a>
+  <div class='mx-3'>
+    <a href="{% url 'artist-import' %}" class="btn btn-primary">
+      <span class="icon-[tabler--file-upload] size-4"></span> Bulk Import
+    </a>
+      <a href="{% url 'artist-export' %}" class="btn btn-primary">
+      <span class="icon-[tabler--download] size-4"></span> Bulk Export
+    </a>
+      <a href="{% url 'artist-create' %}" class="btn btn-primary">
+      <span class="icon-[tabler--plus] size-4"></span> Add Artist
+    </a>
+  </div>
 </div>
 
 
